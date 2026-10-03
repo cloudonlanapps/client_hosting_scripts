@@ -1,0 +1,4 @@
+# Per-env work folders when this checkout is run in place.
+/dev/
+/beta/
+/prod/
