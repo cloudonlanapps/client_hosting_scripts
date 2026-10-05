@@ -226,7 +226,8 @@ do_build() {
 
     if [ "$HAS_WEBSITE" -eq 1 ]; then
         echo "==> website — API $API_URL"
-        generate website "$WORK/website" --app-url "$APP_URL"
+        # Its own URL is where its robots.txt and sitemap.xml say its pages are.
+        generate website "$WORK/website" --app-url "$APP_URL" --website-url "$WEBSITE_URL"
         build_web "$WORK/website" "$OUT/website"
     fi
 
