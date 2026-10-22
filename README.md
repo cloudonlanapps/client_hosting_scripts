@@ -2,7 +2,7 @@
 
 Builds a brand's Flutter web frontends — an app and, optionally, a website —
 from a **core repository's templates**, and publishes them to a VPS behind
-nginx. Generic: every name, URL and ref arrives as a parameter or from the
+nginx. It also builds the member app for Android, as an APK (`android/`). Generic: every name, URL and ref arrives as a parameter or from the
 caller's conf. It knows no product, no repository and no branch.
 
 The server-side counterpart is
@@ -35,6 +35,28 @@ web/deploy_web-conf.sh <brand>/brand.conf <env> <run|build|publish|release>
 
 `deploy_web-conf.sh` reads the conf and calls `web/deploy_web.sh`, which takes
 everything as flags (`--help` lists them) for callers without a conf.
+
+## Android
+
+```bash
+android/deploy_android-conf.sh <brand>/brand.conf <env>
+```
+
+Clones the core at `<env>_CORE_REF`, generates the app with the generator's
+`--android-id` (and `--android-name`), runs `flutter build apk --release`, and
+writes `out-android/<brand>-<env>.apk` and its `build.info` under the env's
+work folder. It reads the same conf, plus:
+
+```bash
+prod_ANDROID_ID="org.example.club"        # required for the Android build
+beta_ANDROID_ID="org.example.club.beta"   # one per env, so they install side by side
+prod_ANDROID_NAME="Example"               # optional: default club.json's shortName
+```
+
+A conf without `<env>_ANDROID_ID` still builds for the web. A plain `http://`
+API (the dev server) makes the generator allow cleartext traffic in the app.
+The APK is signed with the debug key until release signing is set up.
+`android/deploy_android.sh` takes everything as flags (`--help`).
 
 ## The conf
 
@@ -103,4 +125,5 @@ way), a dev build, or one built for other hosts than the conf now names.
 
 `git`, `flutter` (with `dart`), `rsync`, and `python3` for `run`, on the build
 machine; SSH access to the core repository and, for publishing, to the VPS.
-Builds never run on the VPS.
+Builds never run on the VPS. For Android, also the Android SDK
+(`ANDROID_HOME`) and Java 17.
