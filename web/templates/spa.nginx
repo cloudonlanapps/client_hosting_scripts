@@ -24,8 +24,8 @@ server {
     # add_header in a location replaces the server's, so every location below
     # repeats the security headers rather than inheriting them.
     #
-    # HSTS starts at five minutes and is raised to a year (31536000) once seen
-    # working. No includeSubDomains or preload: the bare domain also serves a
+    # HSTS is one year (31536000); it started at five minutes while new (#4)
+    # and was raised once seen working (#6). No includeSubDomains or preload: the bare domain also serves a
     # club's website. The Content-Security-Policy is not a header here: the
     # generated page sets its own (club_client#315).
 
@@ -36,7 +36,7 @@ server {
     location / {
         try_files $uri $uri/ /index.html;
         add_header Cache-Control "no-cache" always;
-        add_header Strict-Transport-Security "max-age=300" always;
+        add_header Strict-Transport-Security "max-age=31536000" always;
         add_header X-Frame-Options "SAMEORIGIN" always;
         add_header X-Content-Type-Options "nosniff" always;
         add_header Referrer-Policy "strict-origin-when-cross-origin" always;
@@ -45,7 +45,7 @@ server {
     # index.html names the current build's bootstrap script: never cache it.
     location = /index.html {
         add_header Cache-Control "no-store" always;
-        add_header Strict-Transport-Security "max-age=300" always;
+        add_header Strict-Transport-Security "max-age=31536000" always;
         add_header X-Frame-Options "SAMEORIGIN" always;
         add_header X-Content-Type-Options "nosniff" always;
         add_header Referrer-Policy "strict-origin-when-cross-origin" always;
@@ -54,7 +54,7 @@ server {
     # Renamed per build, so a name is never reused: cache for good.
     location ~ ^/(main\.[0-9]+\.dart|flutter_bootstrap\.[0-9]+)\.js$ {
         add_header Cache-Control "public, max-age=31536000, immutable" always;
-        add_header Strict-Transport-Security "max-age=300" always;
+        add_header Strict-Transport-Security "max-age=31536000" always;
         add_header X-Content-Type-Options "nosniff" always;
     }
 @@EXTRA_LOCATIONS@@}
